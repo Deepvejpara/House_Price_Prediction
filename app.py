@@ -86,22 +86,24 @@ with col2:
 # -----------------------
 if st.button("Predict Price 💰"):
 
-    # Create full input with defaults
-    input_data = pd.DataFrame(columns=all_columns)
+    # Default values
+    default_values = {col: 0 for col in all_columns}
+    default_values['ExterQual'] = 'TA'
+    default_values['CentralAir'] = 'N'
 
-    for col in input_data.columns:
-        input_data[col] = default_values[col]
+    # Create ONE ROW dataframe
+    input_data = pd.DataFrame([default_values])
 
-    # Override important features
-    input_data['OverallQual'] = overall_qual
-    input_data['ExterQual'] = exter_qual
-    input_data['TotalSF'] = total_sf
-    input_data['CentralAir'] = central_air
+    # Override user inputs
+    input_data.loc[0, 'OverallQual'] = overall_qual
+    input_data.loc[0, 'ExterQual'] = exter_qual
+    input_data.loc[0, 'TotalSF'] = total_sf
+    input_data.loc[0, 'CentralAir'] = central_air
 
     # Predict
     prediction = model.predict(input_data)[0]
 
-    # Display result
+    # Display
     st.markdown(
         f'<div class="prediction-box">Estimated Price: ${prediction:,.2f}</div>',
         unsafe_allow_html=True
