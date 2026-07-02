@@ -106,14 +106,20 @@ if st.button("Predict Price 💰"):
     default_values['KitchenQual'] = 3
     default_values['BsmtQual'] = 0
     default_values['FireplaceQu'] = 0
-    default_values['CentralAir'] = 'N'
+    default_values['CentralAir_Y'] = 0
+    default_values['CentralAir_N'] = 1
 
     input_data = pd.DataFrame([default_values])
 
     # Apply inputs
     input_data.loc[0, 'OverallQual'] = overall_qual
     input_data.loc[0, 'TotalSF'] = total_sf
-    input_data.loc[0, 'CentralAir'] = central_air
+    if central_air == "Y":
+        input_data.loc[0, 'CentralAir_Y'] = 1
+        input_data.loc[0, 'CentralAir_N'] = 0
+    else:
+        input_data.loc[0, 'CentralAir_Y'] = 0
+        input_data.loc[0, 'CentralAir_N'] = 1
 
     input_data.loc[0, 'ExterQual'] = qual_map[exter_qual]
     input_data.loc[0, 'KitchenQual'] = qual_map[kitchen_qual]
