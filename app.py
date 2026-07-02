@@ -71,25 +71,45 @@ st.markdown('<div class="subtitle">Enter key property details to estimate price<
 # -----------------------
 # 🧾 User Inputs
 # -----------------------
+
 col1, col2 = st.columns(2)
 
 with col1:
     overall_qual = st.slider("Overall Quality", 1, 10, 5)
     total_sf = st.number_input("Total Square Footage", value=1500)
 
-    kitchen_qual = st.selectbox("Kitchen Quality", ["TA", "Gd", "Ex"])
+    kitchen_qual = st.selectbox(
+        "Kitchen Quality",
+        ["TA", "Gd", "Ex"]
+    )
+
+    bsmt_qual = st.selectbox(
+        "Basement Quality",
+        ["None", "TA", "Gd", "Ex"]
+    )
 
 with col2:
-    exter_qual = st.selectbox("Exterior Quality", ["TA", "Gd", "Ex"])
-    central_air = st.selectbox("Central Air", ["Y", "N"])
+    exter_qual = st.selectbox(
+        "Exterior Quality",
+        ["TA", "Gd", "Ex"]
+    )
 
-    bsmt_qual = st.selectbox("Basement Quality", ["None", "TA", "Gd", "Ex"])
-    fireplace_qu = st.selectbox("Fireplace Quality", ["None", "TA", "Gd", "Ex"])
+    fireplace_qu = st.selectbox(
+        "Fireplace Quality",
+        ["None", "TA", "Gd", "Ex"]
+    )
+
+    central_air = st.selectbox(
+        "Central Air",
+        ["Y", "N"]
+    )
+    
 # -----------------------
 # 🔮 Prediction
 # -----------------------
 if st.button("Predict Price 💰"):
 
+    # Ordinal mapping (same as training)
     qual_map = {
         "None": 0,
         "Po": 1,
@@ -99,33 +119,18 @@ if st.button("Predict Price 💰"):
         "Ex": 5
     }
 
-    default_values = {col: 0 for col in all_columns}
+    # Create input dataframe (RAW + mapped mix)
+    input_data = pd.DataFrame({
+        'OverallQual': [overall_qual],
+        'TotalSF': [total_sf],
+        'ExterQual': [qual_map[exter_qual]],
+        'KitchenQual': [qual_map[kitchen_qual]],
+        'BsmtQual': [qual_map[bsmt_qual]],
+        'FireplaceQu': [qual_map[fireplace_qu]],
+        'CentralAir': [central_air]  # 👈 KEEP STRING (pipeline handles it)
+    })
 
-    # Fix defaults
-    default_values['ExterQual'] = 3
-    default_values['KitchenQual'] = 3
-    default_values['BsmtQual'] = 0
-    default_values['FireplaceQu'] = 0
-    default_values['CentralAir_Y'] = 0
-    default_values['CentralAir_N'] = 1
-
-    input_data = pd.DataFrame([default_values])
-
-    # Apply inputs
-    input_data.loc[0, 'OverallQual'] = overall_qual
-    input_data.loc[0, 'TotalSF'] = total_sf
-    if central_air == "Y":
-        input_data.loc[0, 'CentralAir_Y'] = 1
-        input_data.loc[0, 'CentralAir_N'] = 0
-    else:
-        input_data.loc[0, 'CentralAir_Y'] = 0
-        input_data.loc[0, 'CentralAir_N'] = 1
-
-    input_data.loc[0, 'ExterQual'] = qual_map[exter_qual]
-    input_data.loc[0, 'KitchenQual'] = qual_map[kitchen_qual]
-    input_data.loc[0, 'BsmtQual'] = qual_map[bsmt_qual]
-    input_data.loc[0, 'FireplaceQu'] = qual_map[fireplace_qu]
-
+    # Predict
     prediction = model.predict(input_data)[0]
 
     st.markdown(
