@@ -64,7 +64,7 @@ all_columns = model.feature_names_in_
 input_data = pd.DataFrame(columns=all_columns)
 
 # fill with NaN
-input_data.loc[0] = np.nan
+input_data.loc[0] = 0
 
 # -----------------------
 # 🏠 Title
