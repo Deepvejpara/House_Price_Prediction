@@ -60,7 +60,10 @@ model = joblib.load("house_price_model.pkl")
 all_columns = model.feature_names_in_
 
 # Default values (you can adjust based on dataset)
-default_values = {col: 0 for col in all_columns}
+input_data = pd.DataFrame(columns=all_columns)
+
+# fill with NaN
+input_data.loc[0] = np.nan
 
 # -----------------------
 # 🏠 Title
