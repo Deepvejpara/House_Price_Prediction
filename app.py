@@ -77,10 +77,14 @@ with col1:
     overall_qual = st.slider("Overall Quality", 1, 10, 5)
     total_sf = st.number_input("Total Square Footage", value=1500)
 
+    kitchen_qual = st.selectbox("Kitchen Quality", ["TA", "Gd", "Ex"])
+
 with col2:
     exter_qual = st.selectbox("Exterior Quality", ["TA", "Gd", "Ex"])
     central_air = st.selectbox("Central Air", ["Y", "N"])
 
+    bsmt_qual = st.selectbox("Basement Quality", ["None", "TA", "Gd", "Ex"])
+    fireplace_qu = st.selectbox("Fireplace Quality", ["None", "TA", "Gd", "Ex"])
 # -----------------------
 # 🔮 Prediction
 # -----------------------
