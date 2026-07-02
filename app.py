@@ -86,24 +86,38 @@ with col2:
 # -----------------------
 if st.button("Predict Price 💰"):
 
-    # Default values
+    qual_map = {
+        "None": 0,
+        "Po": 1,
+        "Fa": 2,
+        "TA": 3,
+        "Gd": 4,
+        "Ex": 5
+    }
+
     default_values = {col: 0 for col in all_columns}
-    default_values['ExterQual'] = 'TA'
+
+    # Fix defaults
+    default_values['ExterQual'] = 3
+    default_values['KitchenQual'] = 3
+    default_values['BsmtQual'] = 0
+    default_values['FireplaceQu'] = 0
     default_values['CentralAir'] = 'N'
 
-    # Create ONE ROW dataframe
     input_data = pd.DataFrame([default_values])
 
-    # Override user inputs
+    # Apply inputs
     input_data.loc[0, 'OverallQual'] = overall_qual
-    input_data.loc[0, 'ExterQual'] = exter_qual
     input_data.loc[0, 'TotalSF'] = total_sf
     input_data.loc[0, 'CentralAir'] = central_air
 
-    # Predict
+    input_data.loc[0, 'ExterQual'] = qual_map[exter_qual]
+    input_data.loc[0, 'KitchenQual'] = qual_map[kitchen_qual]
+    input_data.loc[0, 'BsmtQual'] = qual_map[bsmt_qual]
+    input_data.loc[0, 'FireplaceQu'] = qual_map[fireplace_qu]
+
     prediction = model.predict(input_data)[0]
 
-    # Display
     st.markdown(
         f'<div class="prediction-box">Estimated Price: ${prediction:,.2f}</div>',
         unsafe_allow_html=True
